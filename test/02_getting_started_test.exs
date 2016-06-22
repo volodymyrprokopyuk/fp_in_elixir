@@ -79,19 +79,37 @@ defmodule BinarySearchTest do
     test "returns found element index or -1" do
       assert BinarySearch.find([], 10) == -1
       assert BinarySearch.find([1], 10) == -1
-      assert BinarySearch.find([1,2], 10) == -1
-      assert BinarySearch.find([1,2,3], 10) == -1
+      assert BinarySearch.find([1, 2], 10) == -1
+      assert BinarySearch.find([1, 2, 3], 10) == -1
       assert BinarySearch.find([1], 1) == 0
-      assert BinarySearch.find([1,2], 1) == 0
-      assert BinarySearch.find([1,2], 2) == 1
-      assert BinarySearch.find([1,2,3], 1) == 0
-      assert BinarySearch.find([1,2,3], 2) == 1
-      assert BinarySearch.find([1,2,3], 3) == 2
-      assert BinarySearch.find([1,2,3,4], 2) == 1
-      assert BinarySearch.find([1,2,3,4], 3) == 2
-      assert BinarySearch.find([1.0,2.0,3.0,4.0], 1.0) == 0
+      assert BinarySearch.find([1, 2], 1) == 0
+      assert BinarySearch.find([1, 2], 2) == 1
+      assert BinarySearch.find([1, 2, 3], 1) == 0
+      assert BinarySearch.find([1, 2, 3], 2) == 1
+      assert BinarySearch.find([1, 2, 3], 3) == 2
+      assert BinarySearch.find([1, 2, 3, 4], 2) == 1
+      assert BinarySearch.find([1, 2, 3, 4], 3) == 2
+      assert BinarySearch.find([1.0, 2.0, 3.0, 4.0], 1.0) == 0
       assert BinarySearch.find(["a", "b", "c", "d"], "b") == 1
       assert BinarySearch.find([:a, :b, :c, :d], :c) == 2
+    end
+  end
+end
+
+defmodule SortTest do
+  use ExUnit.Case
+  @moduletag :ch_02
+
+  describe "Sort.sorted?/2" do
+    test "checks if a list is sorted or not for given comparison function" do
+      assert Sort.sorted?([], &</2) == true
+      assert Sort.sorted?([1], &</2) == true
+      assert Sort.sorted?([1, 2], &</2) == true
+      assert Sort.sorted?([1, 2, 3], &</2) == true
+      assert Sort.sorted?([1, 2, 10, 3], &</2) == false
+      assert Sort.sorted?([4, 3, 2, 1], &>/2) == true
+      assert Sort.sorted?([4.0, 4.0, 1.0, 1.0], &>=/2) == true
+      assert Sort.sorted?([4.0, 4.0, 10.0, 1.0, 1.0], &>=/2) == false
     end
   end
 end

@@ -43,3 +43,12 @@ defmodule BinarySearch do
     end
   end
 end
+
+defmodule Sort do
+  @moduledoc false
+
+  def sorted?([], _p), do: true
+  def sorted?([_], _p), do: true
+  def sorted?([a, b | r], p),
+    do: (if p.(a, b) do sorted?([b | r], p) else false end)
+end
