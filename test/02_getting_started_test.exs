@@ -110,6 +110,8 @@ defmodule SortTest do
       assert Sort.sorted?([4, 3, 2, 1], &>/2) == true
       assert Sort.sorted?([4.0, 4.0, 1.0, 1.0], &>=/2) == true
       assert Sort.sorted?([4.0, 4.0, 10.0, 1.0, 1.0], &>=/2) == false
+      assert Sort.sorted?(["a", "b", "c"], &</2) == true
+      assert Sort.sorted?([:c, :b, :a], &>/2) == true
     end
   end
 end
