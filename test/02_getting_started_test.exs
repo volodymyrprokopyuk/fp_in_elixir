@@ -82,10 +82,16 @@ defmodule BinarySearchTest do
       assert BinarySearch.find([1,2], 10) == -1
       assert BinarySearch.find([1,2,3], 10) == -1
       assert BinarySearch.find([1], 1) == 0
+      assert BinarySearch.find([1,2], 1) == 0
       assert BinarySearch.find([1,2], 2) == 1
+      assert BinarySearch.find([1,2,3], 1) == 0
+      assert BinarySearch.find([1,2,3], 2) == 1
       assert BinarySearch.find([1,2,3], 3) == 2
       assert BinarySearch.find([1,2,3,4], 2) == 1
       assert BinarySearch.find([1,2,3,4], 3) == 2
+      assert BinarySearch.find([1.0,2.0,3.0,4.0], 1.0) == 0
+      assert BinarySearch.find(["a", "b", "c", "d"], "b") == 1
+      assert BinarySearch.find([:a, :b, :c, :d], :c) == 2
     end
   end
 end

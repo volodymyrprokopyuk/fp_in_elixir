@@ -33,7 +33,7 @@ defmodule BinarySearch do
   defp do_find(l, x) do
     case Enum.split(l, l |> length |> div(2)) do
       {[], []} -> -1
-      {_left, [{v, i}]} -> if v == x do i else -1 end
+      {[], [{v, i}]} -> if v == x do i else -1 end
       {left, [{v, i} | right]} ->
       cond do
         v == x -> i
