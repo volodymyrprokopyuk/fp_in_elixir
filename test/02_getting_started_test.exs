@@ -136,4 +136,32 @@ defmodule PartialTest do
       assert_raise BadArityError, fn -> f.(" ") end
     end
   end
+
+  describe "Partial.curry/1" do
+    test "for 2-arity function return a function of one argument" do
+      f = Partial.curry(&+/2)
+      f1 = f.(1)
+      assert f1.(2) == 3
+    end
+
+    test "for 1-arity function raises BadArityError" do
+      f = Partial.curry(&String.length/1)
+      f1 = f.("abcd")
+      assert_raise BadArityError, fn -> f1.("e") end
+    end
+
+    test "for 3-arity function raises BadArityError" do
+      f = Partial.curry(&String.split/3)
+      f1 = f.(" a b c d ")
+      assert_raise BadArityError, fn -> f1.(" ") end
+    end
+  end
+
+  describe "Partial.uncurry/1" do
+    test "for curried 2-arity function returns a function of two arguments" do
+      f = Partial.curry(&+/2)
+      f1 = Partial.uncurry(f)
+      assert f1.(1, 2) == 3
+    end
+  end
 end

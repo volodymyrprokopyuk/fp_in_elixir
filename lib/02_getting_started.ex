@@ -56,5 +56,10 @@ end
 defmodule Partial do
   @moduledoc false
 
+  # partial1(f :: (A, B) -> C, a :: A) :: B -> C
   def partial1(f, a), do: fn b -> f.(a, b) end
+  # curry(f :: (A, B) -> C) :: A -> B -> C
+  def curry(f), do: fn a -> fn b -> f.(a, b) end end
+  # uncurry(f :: A -> B -> C) :: (A, B) -> C
+  def uncurry(f), do: fn a, b -> f.(a).(b) end
 end
