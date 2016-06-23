@@ -115,3 +115,25 @@ defmodule SortTest do
     end
   end
 end
+
+defmodule PartialTest do
+  use ExUnit.Case
+  @moduletag :ch_02
+
+  describe "Partial.partial1/2" do
+    test "for 2-arity funciton returns a function with one argument applied" do
+      f = Partial.partial1(&+/2, 1)
+      assert f.(2) == 3
+    end
+
+    test "for 1-arity function raises BadArityError" do
+      f = Partial.partial1(&String.length/1, "abcd")
+      assert_raise BadArityError, fn -> f.("x") end
+    end
+
+    test "for 3-arity function raises BadArityError" do
+      f = Partial.partial1(&String.split/3, " a b c ")
+      assert_raise BadArityError, fn -> f.(" ") end
+    end
+  end
+end

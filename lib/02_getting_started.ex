@@ -52,3 +52,9 @@ defmodule Sort do
   def sorted?([a, b | r], p),
     do: (if p.(a, b) do sorted?([b | r], p) else false end)
 end
+
+defmodule Partial do
+  @moduledoc false
+
+  def partial1(f, a), do: fn b -> f.(a, b) end
+end
