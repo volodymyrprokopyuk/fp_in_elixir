@@ -165,3 +165,17 @@ defmodule PartialTest do
     end
   end
 end
+
+defmodule CompositionTest do
+  use ExUnit.Case
+  @moduletag :ch_02
+
+  describe "Composition.compose/2" do
+    test "returns a function that composes its arguments functions" do
+      f = &Atom.to_string/1
+      g = &String.length/1
+      fg = Composition.compose(f, g)
+      assert fg.(:atom) == 4
+    end
+  end
+end

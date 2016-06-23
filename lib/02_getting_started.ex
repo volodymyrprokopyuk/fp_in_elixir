@@ -63,3 +63,10 @@ defmodule Partial do
   # uncurry(f :: A -> B -> C) :: (A, B) -> C
   def uncurry(f), do: fn a, b -> f.(a).(b) end
 end
+
+defmodule Composition do
+  @moduledoc false
+
+  # compose(f :: A -> B, g :: B -> C) :: A -> C
+  def compose(f, g), do: fn a -> a |> f.() |> g.() end
+end
