@@ -13,4 +13,12 @@ defmodule L do
   def to_list(l), do: do_to_list(l, [])
   defp do_to_list(%L{tail: :empty}, acc), do: acc
   defp do_to_list(%L{head: h, tail: t}, acc), do: do_to_list(t, [h | acc])
+
+  def sum(l), do: do_sum(l, 0)
+  defp do_sum(%L{tail: :empty}, acc), do: acc
+  defp do_sum(%L{head: h, tail: t}, acc), do: do_sum(t, acc + h)
+
+  def product(l), do: do_product(l, 1)
+  defp do_product(%L{tail: :empty}, acc), do: acc
+  defp do_product(%L{head: h, tail: t}, acc), do: do_product(t, acc * h)
 end
