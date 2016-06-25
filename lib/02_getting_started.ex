@@ -2,7 +2,6 @@ defmodule Abs do
   @moduledoc false
 
   def abs(x), do: (if x < 0 do -x else x end)
-
   def format_abs(x), do: "The absolute value of #{x} is #{Abs.abs(x)}"
 end
 
@@ -30,6 +29,7 @@ defmodule BinarySearch do
   @moduledoc false
 
   def find(l, x), do: do_find(Enum.with_index(l), x)
+
   defp do_find(l, x) do
     case Enum.split(l, l |> length |> div(2)) do
       {[], []} -> -1

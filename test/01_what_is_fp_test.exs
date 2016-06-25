@@ -21,8 +21,7 @@ defmodule PlayerTest do
     test "returns a string with winner name" do
       p1 = %Player{name: "Svitlana", score: 14}
       p2 = %Player{name: "Volodymyr", score: 10}
-      assert Player.declare_winner(p1, p2) ==
-        "#{p1.name} is the winner!"
+      assert Player.declare_winner(p1, p2) == "#{p1.name} is the winner!"
     end
   end
 end
