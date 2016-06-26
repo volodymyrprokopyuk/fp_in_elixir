@@ -29,4 +29,12 @@ defmodule L do
   def drop(%L{tail: :empty}, _n), do: L.empty
   def drop(l, 0), do: l
   def drop(%L{head: _h, tail: t}, n), do: drop(t, n - 1)
+
+  def dropWhile(%L{tail: :empty}, _p), do: L.empty
+  def dropWhile(%L{head: h, tail: t}, p),
+    do: (if p.(h) do dropWhile(t, p) else %L{head: h, tail: t} end)
+
+  def setHead(%L{tail: :empty}, _x), do: raise ArgumentError,
+    "L.setHead: empty list"
+  def setHead(%L{head: h, tail: t}, x), do: L.cons(x, t)
 end

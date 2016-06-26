@@ -79,4 +79,19 @@ defmodule LTest do
       assert [1, 2, 3, 4] |> L.new |> L.drop(2) |> L.to_list == [3, 4]
     end
   end
+
+  describe "L.dropWhile/2" do
+    test "return L without elements on which predicate returned true" do
+      assert L.empty |> L.dropWhile(&(&1 < 3)) == L.empty
+      assert [1, 2, 3] |> L.new |> L.dropWhile(&(&1 < 3)) |> L.to_list == [3]
+      assert [1, 2] |> L.new |> L.dropWhile(&(&1 < 3)) == L.empty
+    end
+  end
+
+  describe "L.setHead/2" do
+    test "sets head of L or raises ArgumentError on empty list" do
+      assert [1, 2] |> L.new |> L.setHead(10) |> L.to_list == [10, 2]
+      assert_raise ArgumentError, fn -> L.empty |> L.setHead(10) end
+    end
+  end
 end
