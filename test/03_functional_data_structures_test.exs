@@ -94,4 +94,13 @@ defmodule LTest do
       assert_raise ArgumentError, fn -> L.empty |> L.setHead(10) end
     end
   end
+
+  describe "L.append/2" do
+    test "appends second list to the end of first list" do
+      l1 = [1, 2] |> L.new
+      l2 = [10, 20] |> L.new
+      assert L.empty |> L.append(l1) == l1
+      assert l1 |> L.append(l2) |> L.to_list == [1, 2, 10, 20]
+    end
+  end
 end

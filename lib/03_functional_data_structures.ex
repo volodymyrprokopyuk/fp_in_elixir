@@ -36,5 +36,11 @@ defmodule L do
 
   def setHead(%L{tail: :empty}, _x), do: raise ArgumentError,
     "L.setHead: empty list"
-  def setHead(%L{head: h, tail: t}, x), do: L.cons(x, t)
+  def setHead(%L{head: _h, tail: t}, x), do: L.cons(x, t)
+
+  def append(%L{} = l1, %L{} = l2),
+    do: l1 |> L.to_list |> Enum.reverse |> L.new |> do_append(l2)
+  defp do_append(%L{tail: :empty}, %L{} = l2), do: l2
+  defp do_append(%L{head: h, tail: t}, %L{} = l2),
+    do: do_append(t, L.cons(h, l2))
 end
