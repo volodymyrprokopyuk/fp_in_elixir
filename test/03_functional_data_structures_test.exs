@@ -2,6 +2,15 @@ defmodule LTest do
   use ExUnit.Case
   @moduletag :ch_03
 
+  describe "L.reverse/1" do
+    test "reverses L" do
+      assert L.empty |> L.reverse == L.empty
+      assert [1] |> L.new |> L.reverse |> L.to_list == [1]
+      assert [1,2] |> L.new |> L.reverse |> L.to_list == [2,1]
+      assert [1,2,3] |> L.new |> L.reverse |> L.to_list == [3,2,1]
+    end
+  end
+
   describe "L.to_list/1" do
     test "converts L to List" do
       for l <- [[], [1, 2, 3, 4]] do
