@@ -21,34 +21,18 @@ defmodule LTest do
   end
 
   describe "L.sum/1" do
-    test "returns 0 for empty L" do
+    test "returns sum of L" do
       assert L.empty |> L.sum == 0
-    end
-
-    test "returns sum of integer L" do
-      l = L.new([1, 2, 3, 4])
-      assert L.sum(l) == 10
-    end
-
-    test "return sum of float L" do
-      l = L.new([1.0, 2.0, 3.0, 4.0])
-      assert L.sum(l) == 10.0
+      assert [1, 2, 3, 4] |> L.new |> L.sum == 10
+      assert [1.0, 2.0, 3.0, 4.0] |> L.new |> L.sum == 10.0
     end
   end
 
   describe "L.product/1" do
-    test "returns 1 for empty L" do
+    test "returns product of L" do
       assert L.empty |> L.product == 1
-    end
-
-    test "returns product of integer L" do
-      l = L.new([1, 2, 3, 4])
-      assert L.product(l) == 24
-    end
-
-    test "returns product of float L" do
-      l = L.new([1.0, 2.0, 3.0, 4.0])
-      assert L.product(l) == 24.0
+      assert [1, 2, 3, 4] |> L.new |> L.product == 24
+      assert [1.0, 2.0, 3.0, 4.0] |> L.new |> L.product == 24.0
     end
   end
 
@@ -137,6 +121,34 @@ defmodule LTest do
       assert [1] |> L.new |> L.foldRight(0, &+/2) == 1
       assert [1, 2, 3] |> L.new |> L.foldRight(0, &+/2) == 6
       assert ~w{a b c} |> L.new |> L.foldRight("", &<>/2) == "abc"
+    end
+
+    test "returns the same L for L.empty and L.cons" do
+      l = [1, 2, 3, 4] |> L.new
+      assert L.foldRight(l, L.empty, &L.cons/2) == l
+    end
+  end
+
+  describe "L.sum2/1" do
+    test "returns sum2 of L" do
+      assert L.empty |> L.sum2 == 0
+      assert [1, 2, 3, 4] |> L.new |> L.sum2 == 10
+      assert [1.0, 2.0, 3.0, 4.0] |> L.new |> L.sum2 == 10.0
+    end
+  end
+
+  describe "L.product2/1" do
+    test "returns product2 of L" do
+      assert L.empty |> L.product2 == 1
+      assert [1, 2, 3, 4] |> L.new |> L.product2 == 24
+      assert [1.0, 2.0, 3.0, 4.0] |> L.new |> L.product2 == 24.0
+    end
+  end
+
+  describe "L.length/1" do
+    test "return lentgh of L" do
+      assert L.empty |> L.length == 0
+      assert [1, 2, 3] |> L.new |> L.length == 3
     end
   end
 end
