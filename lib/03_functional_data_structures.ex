@@ -52,4 +52,13 @@ defmodule L do
   defp do_init(%L{tail: :empty}, acc), do: acc
   defp do_init(%L{head: _h, tail: %L{tail: :empty}}, acc), do: acc
   defp do_init(%L{head: h, tail: t}, acc), do: do_init(t, L.cons(h, acc))
+
+  def foldLeft(%L{tail: :empty}, acc, _f), do: acc
+  def foldLeft(%L{head: h, tail: t}, acc, f),
+    do: foldLeft(t, f.(h, acc), f)
+
+  # no TCO
+  def foldRight(%L{tail: :empty}, acc, _f), do: acc
+  def foldRight(%L{head: h, tail: t}, acc, f),
+    do: f.(h, foldRight(t, acc, f))
 end

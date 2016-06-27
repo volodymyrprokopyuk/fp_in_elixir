@@ -121,4 +121,22 @@ defmodule LTest do
       assert [1, 2, 3, 4] |> L.new |> L.init |> L.to_list == [1, 2, 3]
     end
   end
+
+  describe "L.foldLeft/3" do
+    test "folds left L" do
+      assert L.empty |> L.foldLeft(0, &+/2) == 0
+      assert [1] |> L.new |> L.foldLeft(0, &+/2) == 1
+      assert [1, 2, 3] |> L.new |> L.foldLeft(0, &+/2) == 6
+      assert ~w{a b c} |> L.new |> L.foldLeft("", &<>/2) == "cba"
+    end
+  end
+
+  describe "L.foldRight/3" do
+    test "folds right L" do
+      assert L.empty |> L.foldRight(0, &+/2) == 0
+      assert [1] |> L.new |> L.foldRight(0, &+/2) == 1
+      assert [1, 2, 3] |> L.new |> L.foldRight(0, &+/2) == 6
+      assert ~w{a b c} |> L.new |> L.foldRight("", &<>/2) == "abc"
+    end
+  end
 end
