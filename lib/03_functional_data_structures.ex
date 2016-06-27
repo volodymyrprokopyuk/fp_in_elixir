@@ -62,7 +62,11 @@ defmodule L do
   def foldRight(%L{head: h, tail: t}, acc, f),
     do: f.(h, foldRight(t, acc, f))
 
-  def sum2(%L{} = l), do: L.foldRight(l, 0, &+/2)
-  def product2(%L{} = l), do: L.foldRight(l, 1, &*/2)
-  def length(%L{} = l), do: L.foldRight(l, 0, fn _, len -> len + 1 end)
+  def sum2(%L{} = l), do: L.foldLeft(l, 0, &+/2)
+  def product2(%L{} = l), do: L.foldLeft(l, 1, &*/2)
+  def length(%L{} = l), do: L.foldLeft(l, 0, fn _, len -> len + 1 end)
+  def reverse2(%L{} = l), do: L.foldLeft(l, L.empty, &L.cons/2)
+  def append2(%L{} = l1, %L{} = l2), do: L.foldRight(l1, l2, &L.cons/2)
+
+  # TODO: EXERCISE: 13, 15
 end

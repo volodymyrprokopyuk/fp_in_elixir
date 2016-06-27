@@ -151,4 +151,34 @@ defmodule LTest do
       assert [1, 2, 3] |> L.new |> L.length == 3
     end
   end
+
+  describe "L.foldRight/3 vs L.foldLeft/3" do
+    test "L.foldRight stack overflows raising error" do
+      #l = 1..9999999 |> Enum.to_list |> L.new
+      #assert l |> L.foldRight(0, &+/2) == 1234
+    end
+
+    test "L.foldLeft returns result without raising error" do
+      #l = 1..9999999 |> Enum.to_list |> L.new
+      #assert l |> L.foldLeft(0, &+/2) == 1234
+    end
+  end
+
+  describe "L.reverse2/1" do
+    test "reverses L" do
+      assert L.empty |> L.reverse2 == L.empty
+      assert [1] |> L.new |> L.reverse2 |> L.to_list == [1]
+      assert [1,2] |> L.new |> L.reverse2 |> L.to_list == [2,1]
+      assert [1,2,3] |> L.new |> L.reverse2 |> L.to_list == [3,2,1]
+    end
+  end
+
+  describe "L.append2/2" do
+    test "append2s second list to the end of first list" do
+      l1 = [1, 2] |> L.new
+      l2 = [10, 20] |> L.new
+      assert L.empty |> L.append2(l1) == l1
+      assert l1 |> L.append2(l2) |> L.to_list == [1, 2, 10, 20]
+    end
+  end
 end
