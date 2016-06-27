@@ -43,4 +43,10 @@ defmodule L do
   defp do_append(%L{tail: :empty}, %L{} = l2), do: l2
   defp do_append(%L{head: h, tail: t}, %L{} = l2),
     do: do_append(t, L.cons(h, l2))
+
+  def init(%L{} = l),
+    do: l |> do_init(L.empty) |> L.to_list |> Enum.reverse |> L.new
+  defp do_init(%L{tail: :empty}, acc), do: acc
+  defp do_init(%L{head: _h, tail: %L{tail: :empty}}, acc), do: acc
+  defp do_init(%L{head: h, tail: t}, acc), do: do_init(t, L.cons(h, acc))
 end

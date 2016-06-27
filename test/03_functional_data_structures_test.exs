@@ -103,4 +103,13 @@ defmodule LTest do
       assert l1 |> L.append(l2) |> L.to_list == [1, 2, 10, 20]
     end
   end
+
+  describe "L.init/1" do
+    test "return all but last elements of L" do
+      assert L.empty |> L.init == L.empty
+      assert [1] |> L.new |> L.init == L.empty
+      assert [1, 2] |> L.new |> L.init |> L.to_list == [1]
+      assert [1, 2, 3, 4] |> L.new |> L.init |> L.to_list == [1, 2, 3]
+    end
+  end
 end
