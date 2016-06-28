@@ -73,18 +73,18 @@ defmodule LTest do
     end
   end
 
-  describe "L.dropWhile/2" do
+  describe "L.drop_while/2" do
     test "return L without elements on which predicate returned true" do
-      assert L.empty |> L.dropWhile(&(&1 < 3)) == L.empty
-      assert [1, 2, 3] |> L.new |> L.dropWhile(&(&1 < 3)) |> L.to_list == [3]
-      assert [1, 2] |> L.new |> L.dropWhile(&(&1 < 3)) == L.empty
+      assert L.empty |> L.drop_while(&(&1 < 3)) == L.empty
+      assert [1, 2, 3] |> L.new |> L.drop_while(&(&1 < 3)) |> L.to_list == [3]
+      assert [1, 2] |> L.new |> L.drop_while(&(&1 < 3)) == L.empty
     end
   end
 
-  describe "L.setHead/2" do
+  describe "L.set_head/2" do
     test "sets head of L or raises ArgumentError on empty list" do
-      assert [1, 2] |> L.new |> L.setHead(10) |> L.to_list == [10, 2]
-      assert_raise ArgumentError, fn -> L.empty |> L.setHead(10) end
+      assert [1, 2] |> L.new |> L.set_head(10) |> L.to_list == [10, 2]
+      assert_raise ArgumentError, fn -> L.empty |> L.set_head(10) end
     end
   end
 
@@ -106,26 +106,26 @@ defmodule LTest do
     end
   end
 
-  describe "L.foldLeft/3" do
+  describe "L.fold_left/3" do
     test "folds left L" do
-      assert L.empty |> L.foldLeft(0, &+/2) == 0
-      assert [1] |> L.new |> L.foldLeft(0, &+/2) == 1
-      assert [1, 2, 3] |> L.new |> L.foldLeft(0, &+/2) == 6
-      assert ~w{a b c} |> L.new |> L.foldLeft("", &<>/2) == "cba"
+      assert L.empty |> L.fold_left(0, &+/2) == 0
+      assert [1] |> L.new |> L.fold_left(0, &+/2) == 1
+      assert [1, 2, 3] |> L.new |> L.fold_left(0, &+/2) == 6
+      assert ~w{a b c} |> L.new |> L.fold_left("", &<>/2) == "cba"
     end
   end
 
-  describe "L.foldRight/3" do
+  describe "L.fold_right/3" do
     test "folds right L" do
-      assert L.empty |> L.foldRight(0, &+/2) == 0
-      assert [1] |> L.new |> L.foldRight(0, &+/2) == 1
-      assert [1, 2, 3] |> L.new |> L.foldRight(0, &+/2) == 6
-      assert ~w{a b c} |> L.new |> L.foldRight("", &<>/2) == "abc"
+      assert L.empty |> L.fold_right(0, &+/2) == 0
+      assert [1] |> L.new |> L.fold_right(0, &+/2) == 1
+      assert [1, 2, 3] |> L.new |> L.fold_right(0, &+/2) == 6
+      assert ~w{a b c} |> L.new |> L.fold_right("", &<>/2) == "abc"
     end
 
     test "returns the same L for L.empty and L.cons" do
       l = [1, 2, 3, 4] |> L.new
-      assert L.foldRight(l, L.empty, &L.cons/2) == l
+      assert L.fold_right(l, L.empty, &L.cons/2) == l
     end
   end
 
@@ -152,15 +152,15 @@ defmodule LTest do
     end
   end
 
-  describe "L.foldRight/3 vs L.foldLeft/3" do
-    test "L.foldRight stack overflows raising error" do
+  describe "L.fold_right/3 vs L.fold_left/3" do
+    test "L.fold_right stack overflows raising error" do
       #l = 1..9999999 |> Enum.to_list |> L.new
-      #assert l |> L.foldRight(0, &+/2) == 1234
+      #assert l |> L.fold_right(0, &+/2) == 1234
     end
 
-    test "L.foldLeft returns result without raising error" do
+    test "L.fold_left returns result without raising error" do
       #l = 1..9999999 |> Enum.to_list |> L.new
-      #assert l |> L.foldLeft(0, &+/2) == 1234
+      #assert l |> L.fold_left(0, &+/2) == 1234
     end
   end
 
@@ -179,6 +179,50 @@ defmodule LTest do
       l2 = [10, 20] |> L.new
       assert L.empty |> L.append2(l1) == l1
       assert l1 |> L.append2(l2) |> L.to_list == [1, 2, 10, 20]
+    end
+  end
+
+  describe "L.map/2" do
+    test "maps a function over L and returns a new mapped L" do
+      assert L.empty |> L.map(&(&1 + 1)) == L.empty
+      assert [1, 2, 3] |> L.new |> L.map(&(&1 + 1)) |> L.to_list ==
+        [2, 3, 4]
+      assert [1.0, 2.0, 3.0] |> L.new |> L.map(&to_string/1)
+      |> L.to_list == ["1.0", "2.0", "3.0"]
+    end
+  end
+
+  describe "L.filter/2" do
+    test "filters L with predicate and returns a new filtered L" do
+      assert L.empty |> L.filter(&(rem(&1, 2) == 0)) == L.empty
+      assert 1..5 |> Enum.to_list |> L.new
+      |> L.filter(&(rem(&1, 2) == 0)) |> L.to_list == [2, 4]
+    end
+  end
+
+  describe "L.flat_map/2" do
+    test "flats mapped L and return a new flattened L " do
+      assert [1, 2, 3] |> L.new
+      |> L.flat_map(fn x -> [x, x * 10] |> L.new end)
+      |> L.to_list == [1, 10, 2, 20, 3, 30]
+    end
+  end
+
+  describe "L.zip/2" do
+    test "zips two Ls and returns new L of pairs" do
+      l1 = [1, 2, 3] |> L.new
+      l2 = [:a, :b, :c, :d] |> L.new
+      assert l1 |> L.zip(L.empty) == L.empty
+      assert l1 |> L.zip(l1) |> L.to_list == [{1, 1}, {2, 2}, {3, 3}]
+      assert l1 |> L.zip(l2) |> L.to_list == [{1, :a}, {2, :b}, {3, :c}]
+    end
+  end
+
+  describe "L.zip_with/3" do
+    test "zips two Ls with f and returns new L" do
+      l1 = [1, 2, 3] |> L.new
+      l2 = [10, 20, 30] |> L.new
+      assert l1 |> L.zip_with(l2, &+/2) |> L.to_list == [11, 22, 33]
     end
   end
 end
