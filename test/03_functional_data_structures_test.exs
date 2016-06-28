@@ -226,3 +226,8 @@ defmodule LTest do
     end
   end
 end
+
+defmodule TTest do
+  use ExUnit.Case
+  @moduletag :ch_03
+end

@@ -3,6 +3,7 @@ defmodule L do
 
   defstruct head: nil, tail: :empty
 
+  # data constructors
   def empty, do: %L{}
   def cons(head, %L{} = tail), do: %L{head: head, tail: tail}
 
@@ -57,7 +58,7 @@ defmodule L do
   def fold_left(%L{head: h, tail: t}, acc, f),
     do: fold_left(t, f.(h, acc), f)
 
-  # no TCO
+  # no tail-recursive
   def fold_right(%L{tail: :empty}, acc, _f), do: acc
   def fold_right(%L{head: h, tail: t}, acc, f),
     do: f.(h, fold_right(t, acc, f))
@@ -85,12 +86,27 @@ defmodule L do
     fn ll, acc -> ll |> L.reverse |> L.fold_left(acc, &L.cons/2) end)
   end
 
-  def zip(%L{} = l1, %L{} = l2), do: do_zip(l1, l2, %L{}) |> L.reverse
+  def zip(%L{} = l1, %L{} = l2), do: l1 |> do_zip(l2, %L{}) |> L.reverse
   defp do_zip(%L{tail: :empty}, _l2, acc), do: acc
   defp do_zip(_l1, %L{tail: :empty}, acc), do: acc
   defp do_zip(%L{head: h1, tail: t1}, %L{head: h2, tail: t2}, acc),
     do: do_zip(t1, t2, L.cons({h1, h2}, acc))
 
   def zip_with(%L{} = l1, %L{} = l2, f),
-    do: L.zip(l1, l2) |> L.map(fn {a, b} -> f.(a, b) end)
+    do: l1 |> L.zip(l2) |> L.map(fn {a, b} -> f.(a, b) end)
+end
+
+defmodule T do
+  @moduledoc false
+
+  defstruct leaf: nil, left: :empty, right: :empty
+
+  # data constructors
+  def empty, do: %T{}
+  def node(leaf, %T{} = left, %T{} = right),
+    do: %T{leaf: leaf, left: left, right: right}
+
+  # no tail-recursive
+  def new({x}), do: T.node(x, T.empty, T.empty)
+  def new({x, l, r}), do: T.node(x, new(l), new(r))
 end
