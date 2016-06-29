@@ -103,10 +103,17 @@ defmodule T do
 
   # data constructors
   def empty, do: %T{}
-  def node(leaf, %T{} = left, %T{} = right),
-    do: %T{leaf: leaf, left: left, right: right}
+  def node(x, %T{} = l, %T{} = r), do: %T{leaf: x, left: l, right: r}
 
   # no tail-recursive
+  def new({}), do: T.empty
   def new({x}), do: T.node(x, T.empty, T.empty)
   def new({x, l, r}), do: T.node(x, new(l), new(r))
+
+  # no tail-recursive
+  def to_tuple(%T{leaf: nil}), do: {}
+  def to_tuple(%T{leaf: x, left: %T{leaf: nil}, right: %T{leaf: nil}}),
+    do: {x}
+  def to_tuple(%T{leaf: x, left: %T{} = l, right: %T{} = r}),
+    do: {x, to_tuple(l), to_tuple(r)}
 end

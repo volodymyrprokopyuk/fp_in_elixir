@@ -230,4 +230,17 @@ end
 defmodule TTest do
   use ExUnit.Case
   @moduletag :ch_03
+
+  describe "T.to_tuple/1" do
+    test "converts T to tuple" do
+      assert {} |> T.new |> T.to_tuple == {}
+      assert {1} |> T.new |> T.to_tuple == {1}
+      assert {1, {2}, {}} |> T.new |> T.to_tuple == {1, {2}, {}}
+      assert {1, {2}, {3}} |> T.new |> T.to_tuple == {1, {2}, {3}}
+      assert {1, {2, {4}, {}}, {3}} |> T.new |> T.to_tuple ==
+        {1, {2, {4}, {}}, {3}}
+      assert {1, {2, {4}, {}}, {3, {}, {5}}} |> T.new |> T.to_tuple ==
+        {1, {2, {4}, {}}, {3, {}, {5}}}
+    end
+  end
 end
