@@ -105,15 +105,31 @@ defmodule T do
   def empty, do: %T{}
   def node(x, %T{} = l, %T{} = r), do: %T{leaf: x, left: l, right: r}
 
-  # no tail-recursive
+  # all functions are not tail-recursive
   def new({}), do: T.empty
   def new({x}), do: T.node(x, T.empty, T.empty)
   def new({x, l, r}), do: T.node(x, new(l), new(r))
 
-  # no tail-recursive
-  def to_tuple(%T{leaf: nil}), do: {}
-  def to_tuple(%T{leaf: x, left: %T{leaf: nil}, right: %T{leaf: nil}}),
-    do: {x}
+  def to_tuple(%T{left: :empty, right: :empty}), do: {}
+  def to_tuple(%T{leaf: x, left: %T{left: :empty, right: :empty},
+                  right: %T{left: :empty, right: :empty}}), do: {x}
   def to_tuple(%T{leaf: x, left: %T{} = l, right: %T{} = r}),
     do: {x, to_tuple(l), to_tuple(r)}
+
+  def size(%T{left: :empty, right: :empty}), do: 0
+  def size(%T{leaf: _, left: l, right: r}), do: 1 + size(l) + size(r)
+
+  def maximum(%T{left: :empty, right: :empty}),
+    do: raise ArgumentError, "T.maximum: empty tree"
+  def maximum(%T{} = t), do: do_maximum(t)
+  defp do_maximum(%T{leaf: x, left: %T{left: :empty, right: :empty},
+                     right: %T{left: :empty, right: :empty}}), do: x
+  defp do_maximum(%T{leaf: x, left: %T{} = l,
+                     right: %T{left: :empty, right: :empty}}),
+    do: x |> max(do_maximum(l))
+  defp do_maximum(%T{leaf: x, left: %T{left: :empty, right: :empty},
+                     right: %T{} = r}),
+    do: x |> max(do_maximum(r))
+  defp do_maximum(%T{leaf: x, left: l, right: r}),
+    do: x |> max(do_maximum(l)) |> max(do_maximum(r))
 end

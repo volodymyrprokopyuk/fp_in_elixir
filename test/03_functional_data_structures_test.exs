@@ -243,4 +243,23 @@ defmodule TTest do
         {1, {2, {4}, {}}, {3, {}, {5}}}
     end
   end
+
+  describe "T.size/1" do
+    test "returns the number of nodes in a tree" do
+      assert {} |> T.new |> T.size == 0
+      assert {1} |> T.new |> T.size == 1
+      assert {1, {}, {2}} |> T.new |> T.size == 2
+      assert {1, {3, {}, {4}}, {2}} |> T.new |> T.size == 4
+      assert {1, {3, {}, {4}}, {2, {5}, {}}} |> T.new |> T.size == 5
+    end
+  end
+
+  describe "T.maximum/1" do
+    test "return tree node max value" do
+      assert_raise ArgumentError, fn -> {} |> T.new |> T.maximum end
+      assert {1} |> T.new |> T.maximum == 1
+      assert {1, {}, {2}} |> T.new |> T.maximum == 2
+      assert {1, {3, {}, {14}}, {2, {5}, {}}} |> T.new |> T.maximum == 14
+    end
+  end
 end
