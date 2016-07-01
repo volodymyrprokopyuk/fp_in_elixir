@@ -117,19 +117,28 @@ defmodule T do
     do: {x, to_tuple(l), to_tuple(r)}
 
   def size(%T{left: :empty, right: :empty}), do: 0
-  def size(%T{leaf: _, left: l, right: r}), do: 1 + size(l) + size(r)
+  def size(%T{left: %T{} = l, right: %T{} = r}), do: 1 + size(l) + size(r)
 
-  def maximum(%T{left: :empty, right: :empty}),
-    do: raise ArgumentError, "T.maximum: empty tree"
-  def maximum(%T{} = t), do: do_maximum(t)
-  defp do_maximum(%T{leaf: x, left: %T{left: :empty, right: :empty},
-                     right: %T{left: :empty, right: :empty}}), do: x
-  defp do_maximum(%T{leaf: x, left: %T{} = l,
-                     right: %T{left: :empty, right: :empty}}),
-    do: x |> max(do_maximum(l))
-  defp do_maximum(%T{leaf: x, left: %T{left: :empty, right: :empty},
-                     right: %T{} = r}),
-    do: x |> max(do_maximum(r))
-  defp do_maximum(%T{leaf: x, left: l, right: r}),
-    do: x |> max(do_maximum(l)) |> max(do_maximum(r))
+  def maximum(%T{left: :empty, right: :empty}), do: 0
+  def maximum(%T{leaf: x, left: l, right: r}),
+    do: x |> max(maximum(l)) |> max(maximum(r))
+
+  def depth(%T{left: :empty, right: :empty}), do: 0
+  def depth(%T{left: %T{} = l, right: %T{} = r}),
+    do: 1 + max(depth(l), depth(r))
+
+  def map(%T{left: :empty, right: :empty}, _f), do: T.empty
+  def map(%T{leaf: x, left: %T{} = l, right: %T{} = r}, f),
+    do: T.node(f.(x), map(l, f), map(r, f))
+
+  def fold(%T{left: :empty, right: :empty}, acc, _f), do: acc
+  def fold(%T{leaf: x, left: %T{} = l, right: %T{} = r}, acc, f),
+    do: f.(x, fold(l, acc, f), fold(r, acc, f))
+
+  def size2(%T{} = t), do: T.fold(t, 0, fn _x, l, r -> 1 + l + r end)
+  def maximum2(%T{} = t),
+    do: T.fold(t, 0, fn x, l, r -> x |> max(l) |> max(r) end)
+  def depth2(%T{} = t), do: T.fold(t, 0, fn _x, l, r -> 1 + max(l, r) end)
+  def map2(%T{} = t, f),
+    do: T.fold(t, T.empty, fn x, l, r -> T.node(f.(x), l, r) end)
 end

@@ -255,11 +255,78 @@ defmodule TTest do
   end
 
   describe "T.maximum/1" do
-    test "return tree node max value" do
-      assert_raise ArgumentError, fn -> {} |> T.new |> T.maximum end
+    test "returns tree node max value" do
+      assert {} |> T.new |> T.maximum2 == 0
       assert {1} |> T.new |> T.maximum == 1
       assert {1, {}, {2}} |> T.new |> T.maximum == 2
       assert {1, {3, {}, {14}}, {2, {5}, {}}} |> T.new |> T.maximum == 14
+    end
+  end
+
+  describe "T.depth/1" do
+    test "returns the maximum path length from the root of T" do
+      assert {} |> T.new |> T.depth == 0
+      assert {1} |> T.new |> T.depth == 1
+      assert {1, {2}, {}} |> T.new |> T.depth == 2
+      assert {1, {2}, {3, {4}, {}}} |> T.new |> T.depth == 3
+    end
+  end
+
+  describe "T.map/2" do
+    test "maps over T and returns new T" do
+      assert {} |> T.new |> T.map(&(&1 * 10)) == T.empty
+      assert {1} |> T.new |> T.map(&(&1 * 10)) |> T.to_tuple == {10}
+      assert {1, {2}, {3}} |> T.new |> T.map(&(&1 * 10))
+      |> T.to_tuple == {10, {20}, {30}}
+      assert {1, {2, {4}, {5}}, {3, {6}, {7}}} |> T.new |> T.map(&(&1 * 10))
+      |> T.to_tuple == {10, {20, {40}, {50}}, {30, {60}, {70}}}
+    end
+  end
+
+  describe "T.fold/3" do
+    test "folds over T" do
+      assert {} |> T.new |> T.fold(0, &(&1 + &2 + &3)) == 0
+      assert {1} |> T.new |> T.fold(0, &(&1 + &2 + &3)) == 1
+      assert {1, {2}, {3}} |> T.new |> T.fold(0, &(&1 + &2 + &3)) == 6
+    end
+  end
+
+  describe "T.size2/1" do
+    test "returns the number of nodes in a tree" do
+      assert {} |> T.new |> T.size2 == 0
+      assert {1} |> T.new |> T.size2 == 1
+      assert {1, {}, {2}} |> T.new |> T.size2 == 2
+      assert {1, {3, {}, {4}}, {2}} |> T.new |> T.size2 == 4
+      assert {1, {3, {}, {4}}, {2, {5}, {}}} |> T.new |> T.size2 == 5
+    end
+  end
+
+  describe "T.maximum2/1" do
+    test "returns tree node max value" do
+      assert {} |> T.new |> T.maximum2 == 0
+      assert {1} |> T.new |> T.maximum2 == 1
+      assert {1, {}, {2}} |> T.new |> T.maximum2 == 2
+      assert {1, {3, {}, {14}}, {2, {5}, {}}} |> T.new |> T.maximum2 == 14
+    end
+  end
+
+  describe "T.depth2/1" do
+    test "returns the maximum path length from the root of T" do
+      assert {} |> T.new |> T.depth2 == 0
+      assert {1} |> T.new |> T.depth2 == 1
+      assert {1, {2}, {}} |> T.new |> T.depth2 == 2
+      assert {1, {2}, {3, {4}, {}}} |> T.new |> T.depth2 == 3
+    end
+  end
+
+  describe "T.map2/2" do
+    test "maps over T and returns new T" do
+      assert {} |> T.new |> T.map2(&(&1 * 10)) == T.empty
+      assert {1} |> T.new |> T.map2(&(&1 * 10)) |> T.to_tuple == {10}
+      assert {1, {2}, {3}} |> T.new |> T.map2(&(&1 * 10))
+      |> T.to_tuple == {10, {20}, {30}}
+      assert {1, {2, {4}, {5}}, {3, {6}, {7}}} |> T.new |> T.map2(&(&1 * 10))
+      |> T.to_tuple == {10, {20, {40}, {50}}, {30, {60}, {70}}}
     end
   end
 end
