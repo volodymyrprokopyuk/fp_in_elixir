@@ -21,6 +21,18 @@ defmodule OptionTest do
       assert Option.ok(1) |> Option.flat_map(err) == Option.error("err")
     end
   end
+
+  describe "Option.filter/2" do
+    test "returns error if predicate returns false" do
+      t = fn _x -> true end
+      f = fn _x -> false end
+      assert Option.error("oh") |> Option.filter(t) == Option.error("oh")
+      assert Option.error("oh") |> Option.filter(f) == Option.error("oh")
+      assert Option.ok(1) |> Option.filter(t) == Option.ok(1)
+      assert Option.ok(1) |> Option.filter(f) ==
+        Option.error("Option.filter: predicate does not match")
+    end
+  end
 end
 
 defmodule StatTest do
