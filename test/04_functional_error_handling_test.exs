@@ -55,3 +55,26 @@ defmodule StatTest do
     end
   end
 end
+
+defmodule RegExpTest do
+  use ExUnit.Case
+  @moduletag :ch_04
+
+  describe "RegExp.match?/2" do
+    test "matches pattern on string and returns boolean" do
+      assert "*[ae]" |> RegExp.match?("xyz") ==
+        Option.error({'nothing to repeat', 0})
+      assert "[ae]" |> RegExp.match?("xyz") == Option.ok(false)
+      assert "[ae]" |> RegExp.match?("xyza") == Option.ok(true)
+    end
+  end
+
+  describe "RegExp.match2?/2" do
+    test "matches pattern on string and returns boolean" do
+      assert "*[ae]" |> RegExp.match2?("xyz") ==
+        Option.error({'nothing to repeat', 0})
+      assert "[ae]" |> RegExp.match2?("xyz") == Option.ok(false)
+      assert "[ae]" |> RegExp.match2?("xyza") == Option.ok(true)
+    end
+  end
+end

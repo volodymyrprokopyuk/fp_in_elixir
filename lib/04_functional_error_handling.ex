@@ -30,6 +30,9 @@ defmodule Option do
     else Option.error("Option.filter: predicate does not match") end
   end
   def filter(%Option{} = o, _p), do: o
+
+  # lift f :: A -> B into ff :: Option[A] -> Option[B]
+  def lift(f), do: fn %Option{} = o -> Option.map(o, f) end
 end
 
 defmodule Stat do
@@ -43,4 +46,24 @@ defmodule Stat do
       l |> Enum.map(&(:math.pow(&1 - m, 2))) |> Stat.mean
     end
   end
+end
+
+defmodule RegExp do
+  @moduledoc false
+
+  def compile(p) do
+    case Regex.compile(p) do
+      {:ok, r} -> Option.ok(r)
+      {:error, m} -> Option.error(m)
+    end
+  end
+
+  def match?(p, s),
+    do: p |> RegExp.compile |> Option.map(fn r -> Regex.match?(r, s) end)
+
+  def match2?(p, s) do
+    match = Option.lift(fn r -> Regex.match?(r, s) end)
+    p |> RegExp.compile |> match.()
+  end
+
 end
