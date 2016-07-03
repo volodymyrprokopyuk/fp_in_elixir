@@ -17,8 +17,15 @@ defmodule Option do
   def or_else(%Option{}, %Option{} = d), do: d
 
   # apply f inside Option
+  # returns Option
   def map(%Option{ok: x, error: :empty}, f), do: Option.ok(f.(x))
   def map(%Option{} = o, _f), do: o
+
+  def map2(%Option{} = a, %Option{} = b, f) do
+    with %Option{ok: x, error: :empty} <- a,
+         %Option{ok: y, error: :empty} <- b,
+      do: Option.ok(f.(x, y))
+  end
 
   # apply f inside Option, when f itself returns Option
   def flat_map(%Option{ok: x, error: :empty}, f), do: f.(x)
@@ -32,7 +39,37 @@ defmodule Option do
   def filter(%Option{} = o, _p), do: o
 
   # lift f :: A -> B into ff :: Option[A] -> Option[B]
+  # returns new function over Option
   def lift(f), do: fn %Option{} = o -> Option.map(o, f) end
+
+  # sequence :: List[Option] -> Option[List]
+  def sequence(l) do
+    case do_sequence(l, []) do
+      %Option{} = e -> e
+      x -> x |> Enum.reverse |> Option.ok
+    end
+  end
+  defp do_sequence([], acc), do: acc
+  defp do_sequence([%Option{ok: x, error: :empty} | t], acc),
+    do: do_sequence(t, [x | acc])
+  defp do_sequence([e | _t], _acc), do: e
+
+  def traverse(l, f) do
+    case do_traverse(l, [], f) do
+      %Option{} = e -> e
+      x -> x |> Enum.reverse |> Option.ok
+    end
+  end
+  defp do_traverse([], acc, _f), do: acc
+  defp do_traverse([%Option{ok: x, error: :empty} | t], acc, f) do
+    case f.(x) do
+      %Option{ok: y, error: :empty} -> do_traverse(t, [y | acc], f)
+      e -> e
+    end
+  end
+  defp do_traverse([e | _t], _acc, _f), do: e
+
+  def sequence2(l), do: Option.traverse(l, fn x -> Option.ok(x) end)
 end
 
 defmodule Stat do
@@ -66,4 +103,6 @@ defmodule RegExp do
     p |> RegExp.compile |> match.()
   end
 
+  def match_both(p1, p2, s),
+    do: Option.map2(RegExp.match?(p1, s), RegExp.match?(p2, s), &(&&/2))
 end

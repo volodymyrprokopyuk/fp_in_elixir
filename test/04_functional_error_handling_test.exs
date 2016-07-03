@@ -33,6 +33,51 @@ defmodule OptionTest do
         Option.error("Option.filter: predicate does not match")
     end
   end
+
+  describe "Option.sequence/1" do
+    test "sequences list of Options into Option of list or Option.error" do
+      assert [] |> Option.sequence == Option.ok([])
+      assert [Option.error("oh")] |> Option.sequence == Option.error("oh")
+      assert [Option.ok(1)] |> Option.sequence == Option.ok([1])
+      assert [Option.ok(1), Option.ok(2)] |> Option.sequence ==
+        Option.ok([1, 2])
+      assert [Option.ok(1), Option.error("oh"), Option.ok(2)]
+      |> Option.sequence == Option.error("oh")
+    end
+  end
+
+  describe "Option.traverse/1" do
+    test "traverses list of Options applying f and returns Option of list or Option.error" do
+      ok = fn x -> Option.ok(x * 10) end
+      err = fn _ -> Option.error("err") end
+      assert [] |> Option.traverse(ok) == Option.ok([])
+      assert [] |> Option.traverse(err) == Option.ok([])
+      assert [Option.error("oh")] |> Option.traverse(ok) == Option.error("oh")
+      assert [Option.error("oh")] |> Option.traverse(err) == Option.error("oh")
+      assert [Option.ok(1)] |> Option.traverse(ok) == Option.ok([10])
+      assert [Option.ok(1)] |> Option.traverse(err) == Option.error("err")
+      assert [Option.ok(1), Option.ok(2)] |> Option.traverse(ok) ==
+        Option.ok([10, 20])
+      assert [Option.ok(1), Option.ok(2)] |> Option.traverse(err) ==
+        Option.error("err")
+      assert [Option.ok(1), Option.error("oh"), Option.ok(2)]
+      |> Option.traverse(ok) == Option.error("oh")
+      assert [Option.ok(1), Option.error("oh"), Option.ok(2)]
+      |> Option.traverse(err) == Option.error("err")
+    end
+  end
+
+  describe "Option.sequence2/1" do
+    test "sequences list of Options into Option of list or Option.error" do
+      assert [] |> Option.sequence2 == Option.ok([])
+      assert [Option.error("oh")] |> Option.sequence2 == Option.error("oh")
+      assert [Option.ok(1)] |> Option.sequence2 == Option.ok([1])
+      assert [Option.ok(1), Option.ok(2)] |> Option.sequence2 ==
+        Option.ok([1, 2])
+      assert [Option.ok(1), Option.error("oh"), Option.ok(2)]
+      |> Option.sequence2 == Option.error("oh")
+    end
+  end
 end
 
 defmodule StatTest do
@@ -60,7 +105,7 @@ defmodule RegExpTest do
   use ExUnit.Case
   @moduletag :ch_04
 
-  describe "RegExp.match?/2" do
+  describe "RegExp.match?/2 with Option.map" do
     test "matches pattern on string and returns boolean" do
       assert "*[ae]" |> RegExp.match?("xyz") ==
         Option.error({'nothing to repeat', 0})
@@ -69,12 +114,23 @@ defmodule RegExpTest do
     end
   end
 
-  describe "RegExp.match2?/2" do
+  describe "RegExp.match2?/2 with Option.lift" do
     test "matches pattern on string and returns boolean" do
       assert "*[ae]" |> RegExp.match2?("xyz") ==
         Option.error({'nothing to repeat', 0})
       assert "[ae]" |> RegExp.match2?("xyz") == Option.ok(false)
       assert "[ae]" |> RegExp.match2?("xyza") == Option.ok(true)
+    end
+  end
+
+  describe "RegExp.match_both/3 with Option.map2" do
+    test "returns true if string matches both patterns" do
+      assert RegExp.match_both("*[ae]", "[ae]", "Vorokhta") ==
+        Option.error({'nothing to repeat', 0})
+      assert RegExp.match_both("[ae]", "*[ae]", "Vorokhta") ==
+        Option.error({'nothing to repeat', 0})
+      assert RegExp.match_both("[ae]", "[ae]", "xyz") == Option.ok(false)
+      assert RegExp.match_both("[ae]", "[ae]", "Vorokhta") == Option.ok(true)
     end
   end
 end
