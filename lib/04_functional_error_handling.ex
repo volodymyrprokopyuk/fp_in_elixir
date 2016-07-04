@@ -69,7 +69,7 @@ defmodule Option do
   end
   defp do_traverse([e | _t], _acc, _f), do: e
 
-  def sequence2(l), do: Option.traverse(l, fn x -> Option.ok(x) end)
+  def sequence2(l), do: Option.traverse(l, &Option.ok/1)
 end
 
 defmodule Stat do
